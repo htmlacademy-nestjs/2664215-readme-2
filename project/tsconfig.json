@@ -29,6 +29,12 @@
     },
     {
       "path": "./apps/files"
+    },
+    {
+      "path": "./libs/shared/types"
+    },
+    {
+      "path": "./libs/shared/helpers"
     }
   ]
 }
