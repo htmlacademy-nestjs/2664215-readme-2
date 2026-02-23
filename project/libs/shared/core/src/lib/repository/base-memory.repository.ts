@@ -6,7 +6,7 @@ import type { Repository } from './repository.interface';
 export abstract class BaseMemoryRepository<T extends Entity<EntityIdType>>
   implements Repository<T>
 {
-  private entities: Map<T['id'], T> = new Map();
+  protected readonly entities: Map<T['id'], T> = new Map();
 
   public async save(entity: T): Promise<T> {
     if (!entity.id) {

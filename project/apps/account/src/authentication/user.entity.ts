@@ -3,9 +3,9 @@ import { compare, genSalt, hash } from 'bcrypt';
 import type { AuthUser } from '@project/types';
 import type { Entity } from '@project/core';
 
-import { SALT_ROUNDS } from './blog-user.constant';
+import { SALT_ROUNDS } from './authentication.constant';
 
-export class BlogUserEntity implements AuthUser, Entity<string> {
+export class UserEntity implements AuthUser, Entity<string> {
   public id?: string;
   public email!: string;
   public name!: string;
@@ -32,7 +32,7 @@ export class BlogUserEntity implements AuthUser, Entity<string> {
     this.avatarUrl = user.avatarUrl;
   }
 
-  public async setPassword(password: string): Promise<BlogUserEntity> {
+  public async setPassword(password: string): Promise<UserEntity> {
     const salt = await genSalt(SALT_ROUNDS);
     this.passwordHash = await hash(password, salt);
     return this;
