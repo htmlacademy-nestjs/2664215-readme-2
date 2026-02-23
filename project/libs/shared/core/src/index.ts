@@ -1,2 +1,3 @@
-export type { Entity } from './lib/entity.interface';
-export type { Repository } from './lib/repository.interface';
+export { BaseMemoryRepository } from './lib/repository';
+export type { Entity } from './lib/repository';
+export type { Repository } from './lib/repository';
