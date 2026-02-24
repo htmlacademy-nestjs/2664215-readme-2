@@ -16,7 +16,7 @@ export class UserEntity implements AuthUser, Entity<string> {
     this.fillFromObject(user);
   }
 
-  public convertToObject(): AuthUser {
+  public convertToObject() {
     return {
       id: this.id,
       email: this.email,
