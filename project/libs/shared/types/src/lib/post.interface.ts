@@ -35,3 +35,5 @@ export interface VideoPost extends Post {
   title: string;
   videoUrl: string;
 }
+
+export type PostUnion = LinkPost | QuotePost | TextPost | PhotoPost | VideoPost;
