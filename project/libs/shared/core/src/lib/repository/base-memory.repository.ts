@@ -16,6 +16,10 @@ export abstract class BaseMemoryRepository<T extends Entity<EntityIdType>>
     return entity;
   }
 
+  public async findAll(): Promise<T[]> {
+    return Array.from(this.entities.values());
+  }
+
   public async findById(id: T['id']): Promise<T | null> {
     return this.entities.get(id) || null;
   }

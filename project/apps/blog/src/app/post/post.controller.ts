@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 
 import { fillRdo } from '@project/helpers';
 
@@ -14,5 +14,14 @@ export class PostController {
   public async create(@Body() dto: CreatePostDto) {
     const post = await this.postService.create(dto);
     return fillRdo(PostRdo, post.convertToObject());
+  }
+
+  @Get('/')
+  public async getAll() {
+    const posts = await this.postService.getAll();
+    return fillRdo(
+      PostRdo,
+      posts.map((post) => post.convertToObject()),
+    );
   }
 }
