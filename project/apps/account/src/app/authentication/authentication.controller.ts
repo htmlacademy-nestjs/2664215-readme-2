@@ -45,8 +45,8 @@ export class AuthenticationController {
     description: 'User found',
   })
   @Get(':id')
-  public async show(@Param('id') id: string) {
-    const user = await this.authorizationService.getUser(id);
+  public async getById(@Param('id') id: string) {
+    const user = await this.authorizationService.getById(id);
     return fillRdo(UserRdo, user.convertToObject());
   }
 }

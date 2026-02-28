@@ -53,13 +53,11 @@ export class AuthenticationService {
     return user;
   }
 
-  public async getUser(id: string) {
+  public async getById(id: string) {
     const user = await this.blogUserRepository.findById(id);
-
     if (!user) {
       throw new NotFoundException(AUTH_USER_NOT_FOUND);
     }
-
     return user;
   }
 }
