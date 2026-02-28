@@ -16,50 +16,10 @@ export class PostService {
   constructor(private readonly postRepository: PostRepository) {}
 
   public async create(dto: CreatePostDto): Promise<PostEntity> {
-    switch (dto.type) {
-      case PostType.Link: {
-        const post = await this.postRepository.findByLinkUrl(dto.linkUrl);
-        if (post) {
-          throw new ConflictException(POST_EXISTS);
-        }
-        break;
-      }
-      case PostType.Quote: {
-        const post = await this.postRepository.findByQuote(
-          dto.quote,
-          dto.quoteAuthor,
-        );
-        if (post) {
-          throw new ConflictException(POST_EXISTS);
-        }
-        break;
-      }
-      case PostType.Photo: {
-        const post = await this.postRepository.findByPhotoUrl(dto.photoUrl);
-        if (post) {
-          throw new ConflictException(POST_EXISTS);
-        }
-        break;
-      }
-      case PostType.Text: {
-        const post = await this.postRepository.findByTitleAndText(
-          dto.title,
-          dto.text,
-        );
-        if (post) {
-          throw new ConflictException(POST_EXISTS);
-        }
-        break;
-      }
-      case PostType.Video: {
-        const post = await this.postRepository.findByVideoUrl(dto.videoUrl);
-        if (post) {
-          throw new ConflictException(POST_EXISTS);
-        }
-        break;
-      }
+    const isPostExisting = await this.checkIsPostExisting(dto);
+    if (isPostExisting) {
+      throw new ConflictException(POST_EXISTS);
     }
-
     const postEntity = new PostEntity(dto);
     return this.postRepository.save(postEntity);
   }
@@ -74,5 +34,35 @@ export class PostService {
       throw new NotFoundException(POST_NOT_FOUND);
     }
     return post;
+  }
+
+  private async checkIsPostExisting(dto: CreatePostDto): Promise<boolean> {
+    let post: PostEntity | null;
+    switch (dto.type) {
+      case PostType.Link:
+        post = await this.postRepository.findByLinkUrl(dto.linkUrl);
+        break;
+      case PostType.Quote:
+        post = await this.postRepository.findByQuote(
+          dto.quote,
+          dto.quoteAuthor,
+        );
+        break;
+      case PostType.Photo:
+        post = await this.postRepository.findByPhotoUrl(dto.photoUrl);
+        break;
+      case PostType.Text:
+        post = await this.postRepository.findByTitleAndText(
+          dto.title,
+          dto.text,
+        );
+        break;
+      case PostType.Video:
+        post = await this.postRepository.findByVideoUrl(dto.videoUrl);
+        break;
+      default:
+        return false
+    }
+    return !!post;
   }
 }
