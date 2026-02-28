@@ -1,7 +1,7 @@
 import type { Entity } from '@project/core';
-import { PostType, type Post, type PostUnion } from '@project/types';
+import { PostType, type PostBase, type Post } from '@project/types';
 
-export class PostEntity implements Post, Entity<string> {
+export class PostEntity implements PostBase, Entity<string> {
   public id?: string;
   public type!: PostType;
   public tags?: string[];
@@ -16,11 +16,11 @@ export class PostEntity implements Post, Entity<string> {
   public photoUrl?: string;
   public videoUrl?: string;
 
-  constructor(post: PostUnion) {
+  constructor(post: Post) {
     this.fillFromObject(post);
   }
 
-  public convertToObject(): PostUnion {
+  public convertToObject() {
     const basePost = {
       id: this.id,
       type: this.type,
@@ -66,7 +66,7 @@ export class PostEntity implements Post, Entity<string> {
     }
   }
 
-  public fillFromObject(post: PostUnion): void {
+  public fillFromObject(post: Post): void {
     this.id = post.id;
     this.type = post.type;
     this.tags = post.tags;

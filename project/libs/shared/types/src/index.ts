@@ -1,11 +1,11 @@
 export { PostType } from './lib/post-type.enum';
 export type { AuthUser } from './lib/auth-user.interface';
 export type {
-  Post,
+  PostBase,
   LinkPost,
   QuotePost,
   PhotoPost,
-  PostUnion,
+  Post,
   TextPost,
   VideoPost,
 } from './lib/post.interface';

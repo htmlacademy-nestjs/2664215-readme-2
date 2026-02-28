@@ -1,39 +1,39 @@
 import { PostType } from './post-type.enum';
 
-export interface Post {
+export interface PostBase {
   id?: string;
   type: PostType;
   tags?: string[];
 }
 
-export interface LinkPost extends Post {
+export interface LinkPost extends PostBase {
   type: PostType.Link;
   linkUrl: string;
   description: string;
 }
 
-export interface QuotePost extends Post {
+export interface QuotePost extends PostBase {
   type: PostType.Quote;
   quote: string;
   quoteAuthor: string;
 }
 
-export interface TextPost extends Post {
+export interface TextPost extends PostBase {
   type: PostType.Text;
   title: string;
   announce: string;
   text: string;
 }
 
-export interface PhotoPost extends Post {
+export interface PhotoPost extends PostBase {
   type: PostType.Photo;
   photoUrl: string;
 }
 
-export interface VideoPost extends Post {
+export interface VideoPost extends PostBase {
   type: PostType.Video;
   title: string;
   videoUrl: string;
 }
 
-export type PostUnion = LinkPost | QuotePost | TextPost | PhotoPost | VideoPost;
+export type Post = LinkPost | QuotePost | TextPost | PhotoPost | VideoPost;

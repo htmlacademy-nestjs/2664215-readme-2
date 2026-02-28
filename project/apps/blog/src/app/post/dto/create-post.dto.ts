@@ -1,15 +1,12 @@
-import { PostType } from '@project/types';
+import { CreateLinkPostDto } from './create-link-post.dto';
+import { CreateQuotePostDto } from './create-quote-post.dto';
+import { CreateTextPostDto } from './create-text-post.dto';
+import { CreatePhotoPostDto } from './create-photo-post.dto';
+import { CreateVideoPostDto } from './create-video-post.dto';
 
-export class CreatePostDto {
-  public type!: PostType;
-  public tags?: string[];
-  public linkUrl?: string;
-  public description?: string;
-  public quote?: string;
-  public quoteAuthor?: string;
-  public title?: string;
-  public announce?: string;
-  public text?: string;
-  public photoUrl?: string;
-  public videoUrl?: string;
-}
+export type CreatePostDto =
+  | CreateLinkPostDto
+  | CreateQuotePostDto
+  | CreateTextPostDto
+  | CreatePhotoPostDto
+  | CreateVideoPostDto;
