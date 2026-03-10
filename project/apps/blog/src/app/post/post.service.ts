@@ -1,15 +1,12 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import { PostType } from '@project/types';
 
-import { PostRepository } from './post.repository';
+import type { CreatePostDto } from './dto/create-post.dto';
 import { PostEntity } from './post.entity';
 import { POST_EXISTS, POST_NOT_FOUND } from './post.constant';
-import type { CreatePostDto } from './dto/create-post.dto';
+import { PostExistsError, PostNotFoundError } from './errors';
+import { PostRepository } from './post.repository';
 
 @Injectable()
 export class PostService {
@@ -18,7 +15,7 @@ export class PostService {
   public async create(dto: CreatePostDto): Promise<PostEntity> {
     const isPostExisting = await this.checkIsPostExisting(dto);
     if (isPostExisting) {
-      throw new ConflictException(POST_EXISTS);
+      throw new PostExistsError(POST_EXISTS);
     }
     const postEntity = new PostEntity(dto);
     return this.postRepository.save(postEntity);
@@ -31,7 +28,7 @@ export class PostService {
   public async getById(id: string): Promise<PostEntity> {
     const post = await this.postRepository.findById(id);
     if (!post) {
-      throw new NotFoundException(POST_NOT_FOUND);
+      throw new PostNotFoundError(POST_NOT_FOUND);
     }
     return post;
   }
@@ -61,7 +58,7 @@ export class PostService {
         post = await this.postRepository.findByVideoUrl(dto.videoUrl);
         break;
       default:
-        return false
+        return false;
     }
     return !!post;
   }

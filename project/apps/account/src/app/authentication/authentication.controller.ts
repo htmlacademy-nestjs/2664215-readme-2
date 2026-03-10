@@ -1,4 +1,14 @@
-import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Get,
+  HttpStatus,
+  NotFoundException,
+  Param,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { fillRdo } from '@project/helpers';
@@ -7,6 +17,11 @@ import { AuthenticationService } from './authentication.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoggedUserRdo } from './rdo/logged-user.rdo';
 import { LoginUserDto } from './dto/login-user.dto';
+import {
+  UserExistsError,
+  UserNotFoundError,
+  UserWrongPasswordError,
+} from './errors';
 import { UserRdo } from './rdo/user.rdo';
 
 @ApiTags('authentication')
@@ -20,8 +35,12 @@ export class AuthenticationController {
   })
   @Post('register')
   public async register(@Body() dto: CreateUserDto) {
-    const user = await this.authorizationService.register(dto);
-    return fillRdo(UserRdo, user.convertToObject());
+    try {
+      const user = await this.authorizationService.register(dto);
+      return fillRdo(UserRdo, user.convertToObject());
+    } catch (error) {
+      this.mapAuthErrorToHttp(error);
+    }
   }
 
   @ApiResponse({
@@ -35,8 +54,12 @@ export class AuthenticationController {
   })
   @Post('login')
   public async login(@Body() dto: LoginUserDto) {
-    const user = await this.authorizationService.verify(dto);
-    return fillRdo(UserRdo, user.convertToObject());
+    try {
+      const user = await this.authorizationService.verify(dto);
+      return fillRdo(UserRdo, user.convertToObject());
+    } catch (error) {
+      this.mapAuthErrorToHttp(error);
+    }
   }
 
   @ApiResponse({
@@ -46,7 +69,24 @@ export class AuthenticationController {
   })
   @Get(':id')
   public async getById(@Param('id') id: string) {
-    const user = await this.authorizationService.getById(id);
-    return fillRdo(UserRdo, user.convertToObject());
+    try {
+      const user = await this.authorizationService.getById(id);
+      return fillRdo(UserRdo, user.convertToObject());
+    } catch (error) {
+      this.mapAuthErrorToHttp(error);
+    }
+  }
+
+  private mapAuthErrorToHttp(error: unknown): never {
+    if (error instanceof UserExistsError) {
+      throw new ConflictException(error.message);
+    }
+    if (error instanceof UserNotFoundError) {
+      throw new NotFoundException(error.message);
+    }
+    if (error instanceof UserWrongPasswordError) {
+      throw new UnauthorizedException(error.message);
+    }
+    throw error;
   }
 }

@@ -1,9 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import {
   AUTH_USER_EXISTS,
@@ -14,17 +9,22 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UserEntity } from './user.entity';
 import { UserRepository } from './user.repository';
+import {
+  UserNotFoundError,
+  UserExistsError,
+  UserWrongPasswordError,
+} from './errors';
 
 @Injectable()
 export class AuthenticationService {
   constructor(private readonly blogUserRepository: UserRepository) {}
 
-  public async register(dto: CreateUserDto) {
+  public async register(dto: CreateUserDto): Promise<UserEntity> {
     const { email, name, password, avatarUrl } = dto;
 
     const user = await this.blogUserRepository.findByEmail(email);
     if (user) {
-      throw new ConflictException(AUTH_USER_EXISTS);
+      throw new UserExistsError(AUTH_USER_EXISTS);
     }
 
     const userEntity = await new UserEntity({
@@ -37,26 +37,26 @@ export class AuthenticationService {
     return this.blogUserRepository.save(userEntity);
   }
 
-  public async verify(dto: LoginUserDto) {
+  public async verify(dto: LoginUserDto): Promise<UserEntity> {
     const { email, password } = dto;
 
     const user = await this.blogUserRepository.findByEmail(email);
     if (!user) {
-      throw new NotFoundException(AUTH_USER_NOT_FOUND);
+      throw new UserNotFoundError(AUTH_USER_NOT_FOUND);
     }
 
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException(AUTH_USER_PASSWORD_WRONG);
+      throw new UserWrongPasswordError(AUTH_USER_PASSWORD_WRONG);
     }
 
     return user;
   }
 
-  public async getById(id: string) {
+  public async getById(id: string): Promise<UserEntity> {
     const user = await this.blogUserRepository.findById(id);
     if (!user) {
-      throw new NotFoundException(AUTH_USER_NOT_FOUND);
+      throw new UserNotFoundError(AUTH_USER_NOT_FOUND);
     }
     return user;
   }

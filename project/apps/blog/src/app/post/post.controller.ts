@@ -1,10 +1,18 @@
-import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Get,
+  HttpStatus,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 
 import { fillRdo } from '@project/helpers';
 
 import type { CreatePostDto } from './dto/create-post.dto';
-import { PostService } from './post.service';
 import {
   LinkPostRdo,
   QuotePostRdo,
@@ -13,6 +21,8 @@ import {
   TextPostRdo,
   VideoPostRdo,
 } from './rdo';
+import { PostExistsError, PostNotFoundError } from './errors';
+import { PostService } from './post.service';
 
 @Controller('posts')
 @ApiExtraModels(
@@ -40,8 +50,12 @@ export class PostController {
   })
   @Post('/')
   public async create(@Body() dto: CreatePostDto) {
-    const post = await this.postService.create(dto);
-    return fillRdo(PostRdo, post.convertToObject());
+    try {
+      const post = await this.postService.create(dto);
+      return fillRdo(PostRdo, post.convertToObject());
+    } catch (error) {
+      this.mapPostErrorToHttp(error);
+    }
   }
 
   @ApiResponse({
@@ -84,7 +98,21 @@ export class PostController {
   })
   @Get('/:id')
   public async getById(@Param('id') id: string) {
-    const post = await this.postService.getById(id);
-    return fillRdo(PostRdo, post.convertToObject());
+    try {
+      const post = await this.postService.getById(id);
+      return fillRdo(PostRdo, post.convertToObject());
+    } catch (error) {
+      this.mapPostErrorToHttp(error);
+    }
+  }
+
+  private mapPostErrorToHttp(error: unknown): never {
+    if (error instanceof PostExistsError) {
+      throw new ConflictException(error.message);
+    }
+    if (error instanceof PostNotFoundError) {
+      throw new NotFoundException(error.message);
+    }
+    throw error;
   }
 }
