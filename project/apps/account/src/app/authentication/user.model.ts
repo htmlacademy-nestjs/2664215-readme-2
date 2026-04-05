@@ -28,4 +28,4 @@ export class UserModel extends Document implements AuthUser {
   public avatar?: string;
 }
 
-export const BlogUserSchema = SchemaFactory.createForClass(UserModel);
+export const UserSchema = SchemaFactory.createForClass(UserModel);
