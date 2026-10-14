@@ -1,3 +1,5 @@
+name: readme-notifications
+
 services:
 
   readme.notifications.fakesmtp:
@@ -55,3 +57,4 @@ services:
 
 volumes:
   readme.notifications.mongodb:
+    name: notifications_readme.notifications.mongodb
