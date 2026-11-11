@@ -1,0 +1,7 @@
+<h2>Привет, {{user}}!</h2>
+<p>Появились новые публикации:</p>
+<ul>
+  {{#each postSummaries}}
+    <li>{{createdAt}} — {{summary}}</li>
+  {{/each}}
+</ul>

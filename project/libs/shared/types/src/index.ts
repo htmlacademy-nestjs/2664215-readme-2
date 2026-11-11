@@ -1,5 +1,6 @@
 export type { AuthUser } from './lib/auth-user.interface';
 export type { Comment } from './lib/comment.interface';
+export type { EmailSubscriber } from './lib/email-subscriber.interface';
 export type { File } from './lib/file.interface';
 export type { Like } from './lib/like.interface';
 export type {
@@ -14,6 +15,7 @@ export type {
 export type { PaginationResult } from './lib/pagination.interface';
 export { PostSortBy } from './lib/post-sort-by.enum';
 export { PostType } from './lib/post-type.enum';
+export { RabbitRoutingKey } from './lib/rabbit-routing-key.constant';
 export { SortDirection } from './lib/sort-direction.enum';
 export type { StoredFile } from './lib/stored-file.interface';
 export type { TokenPair } from './lib/token.interface';

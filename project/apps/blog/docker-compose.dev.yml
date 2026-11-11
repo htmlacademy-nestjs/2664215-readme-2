@@ -1,3 +1,4 @@
+name: readme-blog
 version: '3.9'
 services:
   readme.blog.postgres:
@@ -37,6 +38,7 @@ services:
 
 volumes:
   readme.postgres.blog:
+    name: blog_readme.postgres.blog
 
 networks:
   readme.blog:
